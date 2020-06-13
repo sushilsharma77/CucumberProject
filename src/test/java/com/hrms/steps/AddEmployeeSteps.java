@@ -5,11 +5,13 @@ import java.util.Map;
 import org.junit.Assert;
 
 import com.hrms.utils.CommonMethods;
+import com.hrms.utils.Constants;
+import com.hrms.utils.ExcelUtility;
 
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 public class AddEmployeeSteps extends CommonMethods {
 
@@ -62,9 +64,9 @@ public class AddEmployeeSteps extends CommonMethods {
 		jsClick(addEmp.checkboxLoginDetails);
 	}
 
-	@When("user enters login credentials")
-	public void user_enters_login_credentials() {
-		addEmp.createEmpLoginCR();
+	@When("user enters login credentials as {string} and {string}")
+	public void user_enters_login_credentials(String uid, String pwd) {
+		addEmp.createEmpLoginCR(uid, pwd);
 	}
 
 	@When("user enter employees {string}, {string} and {string}")
@@ -82,30 +84,54 @@ public class AddEmployeeSteps extends CommonMethods {
 
 	@When("user enters employee details and click on save then employee is added")
 	public void user_enters_employee_details_and_click_on_save(DataTable dataTable) {
-		List<Map<String, String>> addEmployeeList=dataTable.asMaps();
-		
-		for(Map<String, String> map:addEmployeeList) {
-			
-			String fname=map.get("FirstName");
-			String mname=map.get("MiddleName");
-			String lname=map.get("LastName");
-			
+
+		List<Map<String, String>> addEmployeeList = dataTable.asMaps();
+
+		for (Map<String, String> map : addEmployeeList) {
+
+			String fname = map.get("FirstName");
+			String mname = map.get("MiddleName");
+			String lname = map.get("LastName");
+
 			sendText(addEmp.firstName, fname);
 			sendText(addEmp.middleName, mname);
 			sendText(addEmp.lastName, lname);
 			click(addEmp.saveBtn);
-			//adding assertion
-			
-			String actual=pdetails.profilePic.getText();
-			String expected=fname+" "+mname+" "+lname;
+			// adding assertion
+
+			String actual = pdetails.profilePic.getText();
+			String expected = fname + " " + mname + " " + lname;
 			Assert.assertEquals("Employee is not addedd successfully", expected, actual);
 			jsClick(dashboard.addEmp);
 			wait(5);
 		}
 	}
-	
+
 	@Then("employee is added")
 	public void employee_is_added() {
 		System.out.println("-----Employee is added using datatable");
+	}
+
+	@When("user enters employee data from {string} excel sheet then employee is added")
+	public void user_enters_employee_data_from_excel_sheet_then_employee_is_added(String sheetName) {
+		List<Map<String, String>> excelList = ExcelUtility.excelIntoListOfMaps(Constants.TESTDATA_FILEPATH, sheetName);
+
+		for (Map<String, String> data : excelList) {
+			String fname = data.get("FirstName");
+			String mname = data.get("MiddleName");
+			String lname = data.get("LastName");
+
+			sendText(addEmp.firstName, fname);
+			sendText(addEmp.middleName, mname);
+			sendText(addEmp.lastName, lname);
+			click(addEmp.saveBtn);
+
+			String actual = pdetails.profilePic.getText();
+			String expected = fname + " " + mname + " " + lname;
+			Assert.assertEquals("Employee is not addedd successfully", expected, actual);
+			jsClick(dashboard.addEmp);
+
+		}
+
 	}
 }

@@ -28,4 +28,3 @@ public class PersonalDetailsPageElements {
 		PageFactory.initElements(BaseClass.driver, this);
 	}
 }
-

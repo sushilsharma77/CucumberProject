@@ -1,0 +1,7 @@
+-------------------------------------------------------------------------------
+Test set: com.hrms.runners.SmokeRunner
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 58.667 s <<< FAILURE! - in com.hrms.runners.SmokeRunner
+Add new Employee.AddEmployee and create Login Credentials  Time elapsed: 12.721 s  <<< ERROR!
+java.lang.IllegalArgumentException: Keys to send should be a not null CharSequence
+
